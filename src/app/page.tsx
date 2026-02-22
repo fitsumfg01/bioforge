@@ -1,65 +1,145 @@
-import Image from "next/image";
+"use client";
+
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import {
+  useThree,
+} from "@react-three/fiber";
+import{
+  OrbitControls,
+  Stars,
+  Environment,
+  useTexture,
+  Html,
+} from "@react-three/drei"
+import { Suspense, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { Linkedin, Send, Mail, Github } from "lucide-react";
+
+function Earth() {
+  const earthRef = useRef<THREE.Mesh>(null!);
+  const cloudsRef = useRef<THREE.Mesh>(null!);
+
+  const [dayMap, nightMap, cloudsMap] = useTexture([
+    "/textures/earth/2k_earth_daymap.jpg",
+    "/textures/earth/2k_earth_nightmap.jpg",
+    "/textures/earth/2k_earth_clouds.jpg",
+  ]);
+
+  useFrame(() => {
+    if (earthRef.current) {
+      earthRef.current.rotation.y += 0.0006;
+    }
+    if (cloudsRef.current) {
+      cloudsRef.current.rotation.y -= 0.0004;
+    }
+  });
+
+  return (
+    <group>
+      <mesh ref={earthRef}>
+        <sphereGeometry args={[2.5, 64, 64]} />
+        <meshPhongMaterial
+          map={dayMap}
+          emissiveMap={nightMap}
+          emissive="#223366"
+          emissiveIntensity={1.6}
+          shininess={6}
+        />
+      </mesh>
+
+      <mesh ref={cloudsRef} scale={1.005}>
+        <sphereGeometry args={[2.5, 64, 64]} />
+        <meshPhongMaterial map={cloudsMap} transparent opacity={0.65} />
+      </mesh>
+    </group>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="relative h-screen w-full overflow-hidden bg-black">
+      <Canvas className="z-10" camera={{ position: [0, 0, 8], fov: 60 }}>
+        <color attach="background" args={["#000"]} />
+        <ambientLight intensity={0.9} />
+        <hemisphereLight intensity={0.7} groundColor="#111133" />
+        <directionalLight position={[5, 3, 5]} intensity={1.8} castShadow />
+        <pointLight position={[-10, 10, -10]} intensity={1.2} color="#c0d4ff" />
+
+        <Suspense fallback={null}>
+          <Earth />
+          <Stars
+            radius={120}
+            depth={80}
+            count={8000}
+            factor={5}
+            saturation={0.4}
+            fade
+            speed={0.3}
+          />
+          <Environment preset="night" background={false} />
+        </Suspense>
+
+        <OrbitControls enableZoom enablePan minDistance={4} maxDistance={12} />
+      </Canvas>
+
+      <div className="absolute top-8 left-8 pointer-events-auto z-30">
+        <h2
+          className="text-5xl md:text-7xl font-bold tracking-tight"
+          style={{ fontFamily: "'Playfair Display', serif" }}
+        >
+          <span className="text-blue-500">Solar</span>
+          <span className="text-white italic">Forge</span>
+        </h2>
+      </div>
+
+      <div className="absolute bottom-8 left-8 pointer-events-auto z-30">
+        <h2
+          className="text-1xl md:text-2xl font-bold tracking-tight"
+          style={{ fontFamily: "Sans-serif" }}
+        >
+          <span className="text-white">Made By Fitsum</span>
+        </h2>
+      </div>
+      <div className="absolute bottom-8 right-8 flex gap-6 pointer-events-auto z-30">
+        {/* LinkedIn */}
+        <motion.a 
+          href="https://www.linkedin.com/in/fitsumfg01" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          whileHover={{ scale: 1.1, color: "#0077b5" }}
+        >
+          <Linkedin className="text-white" size={28} />
+        </motion.a>
+
+        {/* Telegram */}
+        <motion.a 
+          href="https://t.me/fitsumfg01" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          whileHover={{ scale: 1.1, color: "#229ED9" }}
+        >
+          <Send className="text-white" size={28} />
+        </motion.a>
+
+        {/* Email */}
+        <motion.a 
+          href="mailto:fitsumfg03@gmail.com" 
+          whileHover={{ scale: 1.1 }}
+        >
+          <Mail className="text-white" size={28} />
+        </motion.a>
+
+        {/* Github */}
+        <motion.a 
+          href="https://github.com/fitsumfg01" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          whileHover={{ scale: 1.1 }}
+        >
+          <Github className="text-white" size={28} />
+        </motion.a>
+      </div>
+    </main>
   );
 }
