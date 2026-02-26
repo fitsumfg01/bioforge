@@ -1,18 +1,32 @@
-# BioForge – Interactive 3D Earth Visualization
+# BioForge – Interactive 3D Earth Visualization 🌍
 
-A futuristic 3D representation of Earth using Three.js, React Three Fiber, and Next.js. Features day/night maps, rotating clouds, stars, and orbital controls.
+A modern, immersive 3D Earth globe built for the web. Features realistic day/night transitions, rotating clouds, a starry background, and smooth orbital controls.
 
 ## Live Demo
-(Coming soon via Vercel!)
+🌐 **[Explore BioForge](https://bioforge-one.vercel.app/)** – Click & orbit!
+
+## Features
+- Dynamic day/night cycle with detailed maps
+- Animated cloud layer rotation
+- Particle-based starry sky
+- Intuitive camera controls via @react-three/drei
+- Built with performance in mind for web browsers
 
 ## Tech Stack
-- Next.js (App Router) + TypeScript
-- React Three Fiber + Three.js + Drei
-- Tailwind CSS
-- Framer Motion
-- lucide-react icons
+- **Next.js** (App Router) + **TypeScript**
+- **React Three Fiber** + **Three.js** + **@react-three/drei**
+- **Tailwind CSS**
+- **Framer Motion**
+- **lucide-react** icons
 
-## Setup
+## Quick Start
 ```bash
+# Clone the repo
+git clone https://github.com/fitsumfg01/bioforge.git
+cd bioforge
+
+# Install dependencies
 npm install
+
+# Run locally
 npm run dev
